@@ -51,8 +51,18 @@ public class Main {
 	 * If command is /quit, return empty ArrayList. 
 	 */
 	public static ArrayList<String> parse(Scanner keyboard) {
-		// TO DO
-		return null;
+		ArrayList<String> parseList = new ArrayList<String>();
+		String input = keyboard.nextLine();
+		if(input.equals("/quit"))
+			return parseList;
+		else {
+			String[] words = input.split("\\s");
+			if(words.length == 2) {
+				parseList.add(words[0]);		//adding beginning word
+				parseList.add(words[1]);		//adding ending word
+			}
+		}
+		return parseList;
 	}
 	
 	public static ArrayList<String> getWordLadderDFS(String start, String end) {
@@ -66,13 +76,38 @@ public class Main {
 		return null; // replace this line later with real return
 	}
 	
-    public static ArrayList<String> getWordLadderBFS(String start, String end) {
-		
-		// TODO some code
+    public static ArrayList<String> getWordLadderBFS(String start, String end) {	
+    	char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 		Set<String> dict = makeDictionary();
-		// TODO more code
-		
-		return null; // replace this line later with real return
+		ArrayList<Node> visited = new ArrayList<Node>();
+		Queue<Node> queue = new LinkedList<Node>();	
+		Node root = new Node(start);
+		queue.add(root);
+		while(!queue.isEmpty()) {														//Explore all Nodes in the Queue
+			Node current = queue.remove();
+			if(current.getWord() == end) {
+				ArrayList<String> trace = new ArrayList<String>();
+				while(current != null) {
+					trace.add(0, current.getWord());									//Traces backwards, adding string to beginning
+					current = current.getParent();
+				}
+				return trace;
+			}
+			for(int i = 0; i < start.length(); i++) {
+				for(int j = 0; j < 26; j++) {
+					String newWord = start.substring(0, i) + alphabet[j] + start.substring(i, start.length());	//Finding all possible perumutations in the Dictionary
+					if(dict.contains(newWord)) {
+						Node addNode = new Node(newWord);
+						if(!visited.contains(addNode)) {
+							visited.add(addNode);
+							addNode.setParent(current);
+							queue.add(addNode);
+						}
+					}
+				}
+			}
+		}
+		return null; //Return null if end is not found
 	}
     
 	public static Set<String>  makeDictionary () {
@@ -92,8 +127,9 @@ public class Main {
 	}
 	
 	public static void printLadder(ArrayList<String> ladder) {
-		
+	
 	}
 	// TODO
 	// Other private static methods here
+	
 }
