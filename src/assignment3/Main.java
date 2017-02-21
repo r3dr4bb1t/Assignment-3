@@ -81,22 +81,24 @@ public class Main {
 		Set<String> dict = makeDictionary();
 		ArrayList<Node> visited = new ArrayList<Node>();
 		Queue<Node> queue = new LinkedList<Node>();	
-		Node root = new Node(start);
+		Node root = new Node(start.toLowerCase());
 		queue.add(root);
 		while(!queue.isEmpty()) {														//Explore all Nodes in the Queue
 			Node current = queue.remove();
-			if(current.getWord() == end) {
+			if(current.getWord() == end.toLowerCase()) {
 				ArrayList<String> trace = new ArrayList<String>();
+				trace.add(end);
 				while(current != null) {
 					trace.add(0, current.getWord());									//Traces backwards, adding string to beginning
 					current = current.getParent();
 				}
+				trace.add(0, start);
 				return trace;
 			}
 			for(int i = 0; i < start.length(); i++) {
 				for(int j = 0; j < 26; j++) {
-					String newWord = start.substring(0, i) + alphabet[j] + start.substring(i, start.length());	//Finding all possible perumutations in the Dictionary
-					if(dict.contains(newWord)) {
+					String newWord = start.substring(0, i) + alphabet[j] + start.substring(i, start.length());	//Finding all possible permutations in the Dictionary
+					if(dict.contains(newWord.toUpperCase()) || dict.contains(newWord.toLowerCase())) {
 						Node addNode = new Node(newWord);
 						if(!visited.contains(addNode)) {
 							visited.add(addNode);
@@ -107,7 +109,10 @@ public class Main {
 				}
 			}
 		}
-		return null; //Return null if end is not found
+		ArrayList<String> failed = new ArrayList<String>();
+		failed.add(start);
+		failed.add(end);
+		return failed;
 	}
     
 	public static Set<String>  makeDictionary () {
@@ -127,7 +132,15 @@ public class Main {
 	}
 	
 	public static void printLadder(ArrayList<String> ladder) {
-	
+		if(ladder.size() == 2) {
+			System.out.println("no word ladder can be found between " + ladder.get(0) + " and " + ladder.get(1) + ".");
+		}
+		String start = ladder.get(0);
+		String end   = ladder.get(ladder.size() - 1);
+		System.out.println("a " + (ladder.size()-2) + "-rung word ladder exists between " + start + " and " + end + ".");
+		for(int i = 0; i < ladder.size(); i++) {
+			System.out.println(ladder.get(i).toLowerCase());
+		}
 	}
 	// TODO
 	// Other private static methods here
