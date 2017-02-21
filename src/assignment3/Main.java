@@ -100,16 +100,17 @@ public class Main {
 					String newWord = start.substring(0, i) + alphabet[j] + start.substring(i, start.length());	//Finding all possible permutations in the Dictionary
 					if(dict.contains(newWord.toUpperCase()) || dict.contains(newWord.toLowerCase())) {
 						Node addNode = new Node(newWord);
-						if(!visited.contains(addNode)) {
+						if(!visited.contains(addNode)) {								//Check if previously visited
 							visited.add(addNode);
-							addNode.setParent(current);
+							addNode.setParent(current);									//Set Parent of the new node
+							current.addChildren(addNode);								//Add new node to children of current node
 							queue.add(addNode);
 						}
 					}
 				}
 			}
 		}
-		ArrayList<String> failed = new ArrayList<String>();
+		ArrayList<String> failed = new ArrayList<String>();								//Only reaches this if no path is found, so generate error list
 		failed.add(start);
 		failed.add(end);
 		return failed;

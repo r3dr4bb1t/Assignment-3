@@ -11,11 +11,17 @@ public class Node {
     	data = word;
     	parent = null;
     }
+    
     public void addChildren(String word) {
     	Node newChild = new Node(word);
     	newChild.parent = this;
     	this.children.add(newChild);
     }
+    
+    public void addChildren(Node n) {
+    	this.children.add(n);
+    }
+
     public ArrayList<Node> getChildren() {
     	return children;
     }
