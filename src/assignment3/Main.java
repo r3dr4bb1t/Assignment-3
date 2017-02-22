@@ -4,9 +4,9 @@
  * David Bush
  * Dcb2474
  * 16220
- * <Student2 Name>
- * <Student2 EID>
- * <Student2 5-digit Unique No.>
+ * Minsu Roh
+ * Mr54448
+ * 16220
  * Slip days used: <0>
  * Git URL: https://github.com/Zarodd/Assignment-3
  * 
@@ -36,7 +36,14 @@ public class Main {
 			ps = System.out;			// default to Stdout
 		}
 		initialize();
-		
+		ArrayList<String> input = parse(kb);
+		if(input.isEmpty()) {
+			return;
+		}
+		else {
+			ArrayList<String> ladderBFS = getWordLadderBFS(input.get(0), input.get(1));
+			printLadder(ladderBFS);
+		}
 		// TODO methods to read in words, output ladder
 	}
 	
@@ -86,6 +93,7 @@ public class Main {
 		queue.add(root);
 		while(!queue.isEmpty()) {														//Explore all Nodes in the Queue
 			Node current = queue.remove();
+			System.out.println("here");
 			if(current.getWord() == end.toLowerCase()) {
 				ArrayList<String> trace = new ArrayList<String>();
 				trace.add(end);
@@ -136,6 +144,7 @@ public class Main {
 	public static void printLadder(ArrayList<String> ladder) {
 		if(ladder.size() == 2) {
 			System.out.println("no word ladder can be found between " + ladder.get(0) + " and " + ladder.get(1) + ".");
+			return;
 		}
 		String start = ladder.get(0);
 		String end   = ladder.get(ladder.size() - 1);
