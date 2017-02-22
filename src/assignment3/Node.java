@@ -10,6 +10,7 @@ public class Node {
     public Node(String word) {
     	data = word;
     	parent = null;
+    	children = new ArrayList<Node>();
     }
     
     public void addChildren(String word) {

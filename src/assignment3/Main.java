@@ -41,7 +41,9 @@ public class Main {
 		}
 		else {
 			ArrayList<String> ladderBFS = getWordLadderBFS(input.get(0), input.get(1));
+			ArrayList<String> ladderDFS = getWordLadderDFS(input.get(0), input.get(1));
 			printLadder(ladderBFS);
+			printLadder(ladderDFS);
 		}
 		// TODO methods to read in words, output ladder
 	}
@@ -50,6 +52,7 @@ public class Main {
 		// initialize your static variables or constants here.
 		// We will call this method before running our JUNIT tests.  So call it 
 		// only once at the start of main.
+
 	}
 	
 	/**
@@ -109,7 +112,7 @@ public class Main {
 					{
 						if (newNode == null) // end of the tree go back to parent
 						{
-							getWordLadderDFS(root.getWord(), end); 
+							getWordLadderDFS(root.getWord(), end); 	//This if statement always evaluates to be false
 						}
 						else // not end of the tree go deeper
 						{
@@ -125,7 +128,6 @@ public class Main {
 			}
 		}
 		return ladder;
-	
 	}
 	
 	
@@ -138,21 +140,18 @@ public class Main {
 		queue.add(root);
 		while(!queue.isEmpty()) {														//Explore all Nodes in the Queue
 			Node current = queue.remove();
-			System.out.println("here");
-			if(current.getWord() == end.toLowerCase()) {
+			if(current.getWord().equalsIgnoreCase(end)) {
 				ArrayList<String> trace = new ArrayList<String>();
-				trace.add(end);
 				while(current != null) {
 					trace.add(0, current.getWord());									//Traces backwards, adding string to beginning
 					current = current.getParent();
 				}
-				trace.add(0, start);
 				return trace;
 			}
-			for(int i = 0; i < start.length(); i++) {
+			for(int i = 1; i <= start.length(); i++) {
 				for(int j = 0; j < 26; j++) {
-					String newWord = start.substring(0, i) + alphabet[j] + start.substring(i, start.length());	//Finding all possible permutations in the Dictionary
-					if(dict.contains(newWord.toUpperCase()) || dict.contains(newWord.toLowerCase())) {
+					String newWord = current.getWord().substring(0, i - 1) + alphabet[j] + current.getWord().substring(i, current.getWord().length());	//Finding all possible permutations in the Dictionary
+					if(dict.contains(newWord.toUpperCase())) {
 						Node addNode = new Node(newWord);
 						if(!visited.contains(newWord)) {								//Check if previously visited
 							visited.add(newWord);
