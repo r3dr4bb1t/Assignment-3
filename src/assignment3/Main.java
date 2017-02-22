@@ -5,11 +5,10 @@
  * Dcb2474
  * 16220
  * Minsu Roh
- * Mr54448
+ * mr54448
  * 16220
  * Slip days used: <0>
- * Git URL: https://github.com/Zarodd/Assignment-3
- * 
+ * Git URL:
  * Spring 2017
  */
 
@@ -74,15 +73,61 @@ public class Main {
 	}
 	
 	public static ArrayList<String> getWordLadderDFS(String start, String end) {
-		
-		// Returned list should be ordered start to end.  Include start and end.
-		// Return empty list if no ladder.
-		// TODO some code
+		Node root = new Node(start.toLowerCase());
+		ArrayList<Node> visited = new ArrayList<Node>();
+		ArrayList<String> ladder = new ArrayList<String>();
 		Set<String> dict = makeDictionary();
-		// TODO more code
-		
-		return null; // replace this line later with real return
+		char [] alphabet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+		for(int i = 0; i < start.length(); i++) 
+		{
+			for(int j = 0; j < 26; j++)
+			{
+				String newWord = start.substring(0, i) + alphabet[j] + start.substring(i, start.length());
+				if(dict.contains(newWord.toUpperCase()) || dict.contains(newWord.toLowerCase()))
+				{	
+					Node newNode = new Node(newWord);
+					if(!visited.contains(newNode))
+						{
+							visited.add(newNode);
+							root.addChildren(newNode);
+							newNode.setParent(root);
+						}
+					else 
+					{
+						continue; // find sibling node in parent node 
+					}
+					if (newNode.getWord() == end)
+					{	
+						while(newNode.getParent()!=null)
+						{
+							ladder.add(newNode.getWord());
+							newNode = newNode.getParent();
+						}
+						return ladder;
+				    }
+					else // if can't find "end"
+					{
+						if (newNode == null) // end of the tree go back to parent
+						{
+							getWordLadderDFS(root.getWord(), end); 
+						}
+						else // not end of the tree go deeper
+						{
+							getWordLadderDFS(newNode.getWord(), end); 
+						}
+					}
+				}
+			}
+			if(visited.size()>130)//visited all possible cases but couldn't find
+			{
+				ladder.add(start);
+				ladder.add(end);
+			}
+		}
+		return ladder;
+	
 	}
+	
 	
     public static ArrayList<String> getWordLadderBFS(String start, String end) {	
     	char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
