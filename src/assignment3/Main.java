@@ -80,7 +80,7 @@ public class Main {
     public static ArrayList<String> getWordLadderBFS(String start, String end) {	
     	char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 		Set<String> dict = makeDictionary();
-		ArrayList<Node> visited = new ArrayList<Node>();
+		ArrayList<String> visited = new ArrayList<String>();
 		Queue<Node> queue = new LinkedList<Node>();	
 		Node root = new Node(start.toLowerCase());
 		queue.add(root);
@@ -101,8 +101,8 @@ public class Main {
 					String newWord = start.substring(0, i) + alphabet[j] + start.substring(i, start.length());	//Finding all possible permutations in the Dictionary
 					if(dict.contains(newWord.toUpperCase()) || dict.contains(newWord.toLowerCase())) {
 						Node addNode = new Node(newWord);
-						if(!visited.contains(addNode)) {								//Check if previously visited
-							visited.add(addNode);
+						if(!visited.contains(newWord)) {								//Check if previously visited
+							visited.add(newWord);
 							addNode.setParent(current);									//Set Parent of the new node
 							current.addChildren(addNode);								//Add new node to children of current node
 							queue.add(addNode);
