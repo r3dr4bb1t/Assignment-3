@@ -1,14 +1,13 @@
 /* WORD LADDER Main.java
  * EE422C Project 3 submission by
- * Replace <...> with your actual data.
  * David Bush
  * Dcb2474
  * 16220
  * Minsu Roh
  * mr54448
  * 16220
- * Slip days used: <0>
- * Git URL:
+ * Slip days used: <1>
+ * Git URL:https://github.com/Zarodd/
  * Spring 2017
  */
 
