@@ -8,8 +8,7 @@
  * <Student2 EID>
  * <Student2 5-digit Unique No.>
  * Slip days used: <0>
- * Git URL: https://github.com/Zarodd/Assignment-3
- * 
+ * Git URL:
  * Spring 2017
  */
 
