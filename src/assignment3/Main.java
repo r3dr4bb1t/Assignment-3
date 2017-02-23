@@ -18,9 +18,6 @@ import java.io.*;
 
 public class Main {
 	
-	private static Set<String> list;
-	private static boolean runnable;
-	
 	public static void main(String[] args) throws Exception {
 		
 		Scanner kb;	// input Scanner for commands
@@ -49,9 +46,7 @@ public class Main {
 	}
 	
 	public static void initialize() {
-		
-		list = makeDictionary(); // to evade being initialized everytime
-		runnable = true; //do run once - while runnable is true
+	
 		// initialize your static variables or constants here.
 		// We will call this method before running our JUNIT tests.  So call it 
 		// only once at the start of main.
@@ -78,76 +73,67 @@ public class Main {
 		return parseList;
 	}
 	
-	public static boolean DifferentByOne(String n, String m)
+	public static ArrayList<Node> Collect(String start, String end)
 	{	
-		boolean isdiff = false;
-		if(n.length() != m.length())
+		ArrayList<Node> tree = new ArrayList<Node>();
+		Set<String> dict = makeDictionary();
+		char [] alphabet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+		for(int i = 0; i < start.length(); i++) 
 		{
-			return false;
-		}
-		for (int i=0; i<n.length();i++)
-		{
-			if(n.charAt(i) != m.charAt(i)); // check if its same by position
+			for(int j = 0; j < 26; j++)
 				{
-					if(isdiff)
-					{
-						return false;
-					}
-				  isdiff = true;
+					String newWord = start.substring(0, i) + alphabet[j] + start.substring(i, start.length());
+					if(dict.contains(newWord.toUpperCase()) || dict.contains(newWord.toLowerCase()))
+						{	
+							Node newnode = new Node(newWord); 
+							tree.add(newnode);	//add all the possiblities for one round by one word.
+						}
 				}
-		}
-	return isdiff;
+		}				
+		return tree; // tree has all the nodes.
 	}
 	
 	public static ArrayList<String> getWordLadderDFS(String start, String end)
 	{	
-		
+		Node root = new Node(start.toLowerCase());
+		Stack<Node> order = new Stack<Node>();
 		ArrayList<String> ladder = new ArrayList<String>();
-		ArrayList<String> collection = new ArrayList<String>();
-		ArrayList<String> recursive = new ArrayList<String>();
-		if (runnable)
-		{
-			runnable = false;
-			list = makeDictionary();
-		}
-			for(String s : list)
-			{
-				if(DifferentByOne(start,s))
+		ArrayList<Node> list = new ArrayList<Node>();
+		order.push(root);
+		while(!order.isEmpty())
+		{	
+			int HowMany;
+			Node Current = order.pop();
+			list = Collect(Current.getWord(),end);
+		    HowMany = list.size(); // count the nodes in tree for that word
+			for (int i = 0 ; i < HowMany; i++)
 				{
-					collection.add(s);
+					if (!Current.getChildren().contains(list.get(i)) || Current.getNumChildren()== 0); // anti-duplicate
+					{
+						Current.addChildren(list.get(i)); // add children as many as nodes in list
+					}
 				}
-			}
-		if(list.contains(end))
-		{
-			ladder.add(start);
-			ladder.add(end);
-			return ladder;
-		}
-		if (collection.size()==0)
-		{
-			return ladder;
-		}
-		list.removeAll(collection);
-		for (String i : collection)
-		{
-			recursive = getWordLadderDFS(i, end);
-			if(recursive.size()!=0)
+			// Now Current has nodes for Current word
+			
+			ladder.add(Current.getWord()); // logging dfs path
+													
+			if(Current.getWord()==end) // if found
 			{
-				ladder = recursive;
-				break;
+				return ladder;
+			}
+			if(Current.getChildren().get(0)!=null) //pass if there's no child
+			{
+				for (int i = 0; i< HowMany; i++)//push as many as # of children
+					{
+						order.push(Current.getChildren().get(i)); 
+					}
 			}
 		}
-		if (recursive.size() == 0)
-		{
-			return recursive;
-		}
-		
-		ladder.add(0, start);
-		runnable = true;
-		return ladder;
-	}
-		
-
+		ArrayList<String> failed = new ArrayList<String>();								//Only reaches this if no path is found, so generate error list
+		failed.add(start);
+		failed.add(end);
+		return failed;
+}
     public static ArrayList<String> getWordLadderBFS(String start, String end) {	
     	char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 		Set<String> dict = makeDictionary();
