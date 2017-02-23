@@ -41,9 +41,9 @@ public class Main {
 		}
 		else {
 			ArrayList<String> ladderBFS = getWordLadderBFS(input.get(0), input.get(1));
-			ArrayList<String> ladderDFS = getWordLadderDFS(input.get(0), input.get(1));
+			//ArrayList<String> ladderDFS = getWordLadderDFS(input.get(0), input.get(1));
 			printLadder(ladderBFS);
-			printLadder(ladderDFS);
+			//printLadder(ladderDFS);
 		}
 		// TODO methods to read in words, output ladder
 	}
