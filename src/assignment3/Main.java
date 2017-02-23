@@ -91,18 +91,7 @@ public class Main {
 				{
 					if(isdiff)
 					{
-<<<<<<< HEAD
-						if (newNode == null) // end of the tree go back to parent
-						{
-							getWordLadderDFS(root.getWord(), end); 	//This if statement always evaluates to be false
-						}
-						else // not end of the tree go deeper
-						{
-							getWordLadderDFS(newNode.getWord(), end); 
-						}
-=======
 						return false;
->>>>>>> origin/master
 					}
 				  isdiff = true;
 				}
