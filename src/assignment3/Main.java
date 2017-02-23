@@ -1,14 +1,13 @@
 /* WORD LADDER Main.java
  * EE422C Project 3 submission by
- * Replace <...> with your actual data.
  * David Bush
  * Dcb2474
  * 16220
  * Minsu Roh
  * mr54448
  * 16220
- * Slip days used: <0>
- * Git URL:
+ * Slip days used: <1>
+ * Git URL:https://github.com/Zarodd/
  * Spring 2017
  */
 
@@ -19,7 +18,8 @@ import java.io.*;
 
 public class Main {
 	
-	// static variables and constants only here.
+	private static Set<String> list;
+	private static boolean runnable;
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -49,6 +49,9 @@ public class Main {
 	}
 	
 	public static void initialize() {
+		
+		list = makeDictionary(); // to evade being initialized everytime
+		runnable = true; //do run once - while runnable is true
 		// initialize your static variables or constants here.
 		// We will call this method before running our JUNIT tests.  So call it 
 		// only once at the start of main.
@@ -75,41 +78,20 @@ public class Main {
 		return parseList;
 	}
 	
-	public static ArrayList<String> getWordLadderDFS(String start, String end) {
-		Node root = new Node(start.toLowerCase());
-		ArrayList<Node> visited = new ArrayList<Node>();
-		ArrayList<String> ladder = new ArrayList<String>();
-		Set<String> dict = makeDictionary();
-		char [] alphabet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
-		for(int i = 0; i < start.length(); i++) 
+	public static boolean DifferentByOne(String n, String m)
+	{	
+		boolean isdiff = false;
+		if(n.length() != m.length())
 		{
-			for(int j = 0; j < 26; j++)
-			{
-				String newWord = start.substring(0, i) + alphabet[j] + start.substring(i, start.length());
-				if(dict.contains(newWord.toUpperCase()) || dict.contains(newWord.toLowerCase()))
-				{	
-					Node newNode = new Node(newWord);
-					if(!visited.contains(newNode))
-						{
-							visited.add(newNode);
-							root.addChildren(newNode);
-							newNode.setParent(root);
-						}
-					else 
+			return false;
+		}
+		for (int i=0; i<n.length();i++)
+		{
+			if(n.charAt(i) != m.charAt(i)); // check if its same by position
+				{
+					if(isdiff)
 					{
-						continue; // find sibling node in parent node 
-					}
-					if (newNode.getWord() == end)
-					{	
-						while(newNode.getParent()!=null)
-						{
-							ladder.add(newNode.getWord());
-							newNode = newNode.getParent();
-						}
-						return ladder;
-				    }
-					else // if can't find "end"
-					{
+<<<<<<< HEAD
 						if (newNode == null) // end of the tree go back to parent
 						{
 							getWordLadderDFS(root.getWord(), end); 	//This if statement always evaluates to be false
@@ -118,19 +100,65 @@ public class Main {
 						{
 							getWordLadderDFS(newNode.getWord(), end); 
 						}
+=======
+						return false;
+>>>>>>> origin/master
 					}
+				  isdiff = true;
 				}
-			}
-			if(visited.size()>130)//visited all possible cases but couldn't find
-			{
-				ladder.add(start);
-				ladder.add(end);
-			}
 		}
-		return ladder;
+	return isdiff;
 	}
 	
-	
+	public static ArrayList<String> getWordLadderDFS(String start, String end)
+	{	
+		
+		ArrayList<String> ladder = new ArrayList<String>();
+		ArrayList<String> collection = new ArrayList<String>();
+		ArrayList<String> recursive = new ArrayList<String>();
+		if (runnable)
+		{
+			runnable = false;
+			list = makeDictionary();
+		}
+			for(String s : list)
+			{
+				if(DifferentByOne(start,s))
+				{
+					collection.add(s);
+				}
+			}
+		if(list.contains(end))
+		{
+			ladder.add(start);
+			ladder.add(end);
+			return ladder;
+		}
+		if (collection.size()==0)
+		{
+			return ladder;
+		}
+		list.removeAll(collection);
+		for (String i : collection)
+		{
+			recursive = getWordLadderDFS(i, end);
+			if(recursive.size()!=0)
+			{
+				ladder = recursive;
+				break;
+			}
+		}
+		if (recursive.size() == 0)
+		{
+			return recursive;
+		}
+		
+		ladder.add(0, start);
+		runnable = true;
+		return ladder;
+	}
+		
+
     public static ArrayList<String> getWordLadderBFS(String start, String end) {	
     	char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 		Set<String> dict = makeDictionary();
