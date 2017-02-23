@@ -18,6 +18,11 @@ import java.io.*;
 
 public class Main {
 	
+	static HashSet<String> visited;
+	static ArrayList<String> ladder;
+	static Set<String> dict;
+	
+	static boolean found;
 	public static void main(String[] args) throws Exception {
 		
 		Scanner kb;	// input Scanner for commands
@@ -31,22 +36,31 @@ public class Main {
 			kb = new Scanner(System.in);// default from Stdin
 			ps = System.out;			// default to Stdout
 		}
-		initialize();
-		ArrayList<String> input = parse(kb);
-		if(input.isEmpty()) {
-			return;
+		while(true) {
+			initialize();
+			ArrayList<String> input = parse(kb);
+			if(input.isEmpty()) {
+				return;
+			}
+			else if(input.get(0) == "/quit") {
+				return;
+			}
+			else {
+				ArrayList<String> ladderBFS = getWordLadderBFS(input.get(0), input.get(1));
+				printLadder(ladderBFS);
+				
+				ArrayList<String> ladderDFS = getWordLadderDFS(input.get(0), input.get(1));
+				ladderDFS.add(0, input.get(0));
+				printLadder(ladderDFS);
+			}
 		}
-		else {
-			ArrayList<String> ladderBFS = getWordLadderBFS(input.get(0), input.get(1));
-			//ArrayList<String> ladderDFS = getWordLadderDFS(input.get(0), input.get(1));
-			printLadder(ladderBFS);
-			//printLadder(ladderDFS);
-		}
-		// TODO methods to read in words, output ladder
 	}
 	
 	public static void initialize() {
-	
+		visited = new HashSet<String>();
+		ladder = new ArrayList<String>();
+		found = false;
+		dict = makeDictionary();
 		// initialize your static variables or constants here.
 		// We will call this method before running our JUNIT tests.  So call it 
 		// only once at the start of main.
@@ -73,67 +87,73 @@ public class Main {
 		return parseList;
 	}
 	
-	public static ArrayList<Node> Collect(String start, String end)
+	public static ArrayList<Node> Collect(String start)
 	{	
-		ArrayList<Node> tree = new ArrayList<Node>();
-		Set<String> dict = makeDictionary();
+		ArrayList<Node> explore = new ArrayList<Node>();
 		char [] alphabet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
-		for(int i = 0; i < start.length(); i++) 
-		{
-			for(int j = 0; j < 26; j++)
-				{
-					String newWord = start.substring(0, i) + alphabet[j] + start.substring(i, start.length());
-					if(dict.contains(newWord.toUpperCase()) || dict.contains(newWord.toLowerCase()))
-						{	
-							Node newnode = new Node(newWord); 
-							tree.add(newnode);	//add all the possiblities for one round by one word.
-						}
+		for(int i = 1; i <= start.length(); i++) {
+			for(int j = 0; j < 26; j++) {
+				String newWord = start.substring(0, i-1) + alphabet[j] + start.substring(i, start.length());
+				if(dict.contains(newWord.toUpperCase())) {
+					Node N = new Node(newWord);
+					explore.add(N);
 				}
-		}				
-		return tree; // tree has all the nodes.
+			}
+		}
+		return explore; // tree has all the nodes.
 	}
+	public static boolean DifferentByOne(String n, String m)
+	{	
+		boolean isdiff = false;
+		if(n.length() != m.length())
+		{
+			return false;
+		}
+		for (int i=0; i<n.length();i++)
+		{
+			if(n.charAt(i) != m.charAt(i)); // check if its same by position
+				{
+					if(isdiff)
+					{
+						return false;
+					}
+				  isdiff = true;
+				}
+		}
+	return isdiff;
+	}
+	
+	
 	
 	public static ArrayList<String> getWordLadderDFS(String start, String end)
 	{	
-		Node root = new Node(start.toLowerCase());
-		Stack<Node> order = new Stack<Node>();
-		ArrayList<String> ladder = new ArrayList<String>();
-		ArrayList<Node> list = new ArrayList<Node>();
-		order.push(root);
-		while(!order.isEmpty())
-		{	
-			int HowMany;
-			Node Current = order.pop();
-			list = Collect(Current.getWord(),end);
-		    HowMany = list.size(); // count the nodes in tree for that word
-			for (int i = 0 ; i < HowMany; i++)
-				{
-					if (!Current.getChildren().contains(list.get(i)) || Current.getNumChildren()== 0); // anti-duplicate
-					{
-						Current.addChildren(list.get(i)); // add children as many as nodes in list
-					}
-				}
-			// Now Current has nodes for Current word
+		//ArrayList<Node> list = new ArrayList<Node>();
+		visited.add(start);
+		ArrayList<Node> explore;			//for parent
+		Node cur = new Node(start.toLowerCase());
+		
+		explore = Collect(start);
+		for(Node n: explore) {
 			
-			ladder.add(Current.getWord()); // logging dfs path
-													
-			if(Current.getWord()==end) // if found
-			{
+			if(visited.contains(n.getWord())) {
+				continue;
+			}
+			visited.add(n.getWord());
+			if(n.getWord().equalsIgnoreCase(end)) {
+				ladder.add(0, end);
+				found = true;
+				return ladder;	
+			}
+			getWordLadderDFS(n.getWord(), end);
+			if(found) {
+				ladder.add(0, n.getWord());
 				return ladder;
 			}
-			if(Current.getChildren().get(0)!=null) //pass if there's no child
-			{
-				for (int i = 0; i< HowMany; i++)//push as many as # of children
-					{
-						order.push(Current.getChildren().get(i)); 
-					}
-			}
 		}
-		ArrayList<String> failed = new ArrayList<String>();								//Only reaches this if no path is found, so generate error list
-		failed.add(start);
-		failed.add(end);
-		return failed;
+		return null;
 }
+		
+
     public static ArrayList<String> getWordLadderBFS(String start, String end) {	
     	char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 		Set<String> dict = makeDictionary();
@@ -189,7 +209,11 @@ public class Main {
 	}
 	
 	public static void printLadder(ArrayList<String> ladder) {
-		if(ladder.size() == 2) {
+		if(ladder == null) {
+			System.out.println("no word ladder can be found between " + " and " + ".");
+			return;
+		}
+		else if(ladder.size() == 2) {
 			System.out.println("no word ladder can be found between " + ladder.get(0) + " and " + ladder.get(1) + ".");
 			return;
 		}
